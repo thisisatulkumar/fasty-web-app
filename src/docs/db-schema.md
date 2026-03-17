@@ -46,7 +46,7 @@ A **trigger** is created so that whenever a new user is inserted into `auth.user
 | ----------- | ---------- | -------------------- | ------------------------------------------ |
 | id          | uuid       | Supabase user ID     | PK, FK → auth.users.id                     |
 | name        | text       | Student name         | NOT NULL                                   |
-| phone       | text       | Login phone number   | NOT NULL, UNIQUE                           |
+| email       | text       | Login email          | NOT NULL, UNIQUE                           |
 | room_number | text       | Hostel room number   | NOT NULL, restricted to valid hostel rooms |
 | roll_number | text       | Student roll number  | Optional                                   |
 | created_at  | timestampz | Record creation time | DEFAULT now()                              |
@@ -187,12 +187,12 @@ Used to verify order delivery via OTP.
 
 ### `otp_verifications`
 
-Used for phone-based OTP flows.
+Used for email-based OTP flows.
 
 | Column      | Type    | Constraints   |
 | ----------- | ------- | ------------- |
 | id          | uuid    | PK            |
-| phone       | text    | NOT NULL      |
+| email       | text    | NOT NULL      |
 | otp_code    | text    | NOT NULL      |
 | purpose     | enum    | NOT NULL      |
 | is_verified | boolean | DEFAULT false |
