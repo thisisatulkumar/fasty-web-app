@@ -8,10 +8,10 @@ export default async function HomePage() {
 
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
-      <div className="p-10 flex flex-col items-center gap-10">
-			  <SheetSide />
-		  </div>
-      
+			<div className="p-10 flex flex-col items-center gap-10">
+				<SheetSide />
+			</div>
+
 			<ProductGrid products={products} />
 		</Suspense>
 	);
