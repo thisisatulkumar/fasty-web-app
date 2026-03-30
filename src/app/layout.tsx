@@ -1,6 +1,8 @@
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import SyncClerkWithSupabase from '@/components/auth/SyncClerkWithSupabase';
+import Navbar from '@/components/navbar/Navbar';
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -25,6 +27,7 @@ export default function RootLayout({
 					}}
 				>
 					<SyncClerkWithSupabase />
+					<Navbar />
 					{children}
 				</ClerkProvider>
 			</body>
