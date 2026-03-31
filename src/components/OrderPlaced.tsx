@@ -1,3 +1,4 @@
+import useCartStore from '@/store/cart.store';
 import { useEffect, useState } from 'react';
 
 export const OrderPlaced = ({
@@ -5,13 +6,16 @@ export const OrderPlaced = ({
 	roomNo,
 	totalAmount,
 	itemCount,
+	setSheetStatus,
 }: {
 	orderId: string;
 	roomNo: string;
 	totalAmount: number;
 	itemCount: number;
+	setSheetStatus: (sheetStatus: 'cart') => void;
 }) => {
 	const [step, setStep] = useState(0);
+	const { clearCart } = useCartStore();
 
 	useEffect(() => {
 		const timers = [
@@ -22,6 +26,11 @@ export const OrderPlaced = ({
 		];
 		return () => timers.forEach(clearTimeout);
 	}, []);
+
+	const handleBackToHome = () => {
+		clearCart();
+		setSheetStatus('cart');
+	};
 
 	return (
 		<div
@@ -162,7 +171,7 @@ export const OrderPlaced = ({
 
 			{/* Back Button */}
 			<button
-				onClick={() => window.history.back()}
+				onClick={handleBackToHome}
 				style={{
 					marginTop: '2rem',
 					padding: '12px 28px',

@@ -7,10 +7,12 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { cartItems } from '@/data/cart.data';
 import { billAmount } from '@/utils/cart.utils';
+import useCartStore from '@/store/cart.store';
 
 export const SummaryTable = () => {
+	const { items: cartItems } = useCartStore();
+
 	return (
 		<Table>
 			<TableHeader>
@@ -36,7 +38,7 @@ export const SummaryTable = () => {
 			<TableFooter>
 				<TableRow>
 					<TableCell colSpan={4}>Total</TableCell>
-					<TableCell className="text-right">₹{billAmount}</TableCell>
+					<TableCell className="text-right">₹{billAmount(cartItems)}</TableCell>
 				</TableRow>
 			</TableFooter>
 		</Table>

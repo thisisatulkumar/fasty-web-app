@@ -12,10 +12,11 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 
 import { ROOM_NUMBERS } from '@/constants/allowedRooms';
 import { checkRoom } from '@/utils/checkout.utils';
-import { useUser, SignInButton } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
 import { profileIdFromClerkId, PlaceOrder, insertOrderItems } from '@/services/checkout.services';
-import { billAmount } from '@/utils/cart.utils';
+import { billAmount, getItemsCount } from '@/utils/cart.utils';
 import { cartItems } from '@/data/cart.data';
+import useCartStore from '@/store/cart.store';
 
 const formSchema = z.object({
 	roomNo: z.enum(ROOM_NUMBERS),
@@ -28,6 +29,7 @@ interface CheckoutFormProps {
 	setOrderPlaced: (orderPlaced: boolean) => void;
 	setPlacedOrderId: (orderId: string) => void;
 	setPendingData: (pendingData: FormData | null) => void;
+	setSheetStatus: (sheetStatus: 'order_placed') => void;
 }
 
 export const CheckoutForm = ({
@@ -35,11 +37,13 @@ export const CheckoutForm = ({
 	setOrderPlaced,
 	setPlacedOrderId,
 	setPendingData,
+	setSheetStatus,
 }: CheckoutFormProps) => {
 	const { user } = useUser();
 	const [error, setError] = useState<string>('');
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const { items } = useCartStore();
 
 	const form = useForm<FormData>({
 		resolver: zodResolver(formSchema),
@@ -67,7 +71,7 @@ export const CheckoutForm = ({
 		setLoading(true);
 		try {
 			const id = await profileIdFromClerkId(user.id);
-			const orderId = await PlaceOrder(pendingData.roomNo, id, billAmount);
+			const orderId = await PlaceOrder(pendingData.roomNo, id, billAmount(items));
 			await Promise.all(
 				cartItems.map(({ product_id, quantity, price }) =>
 					insertOrderItems(orderId, product_id, quantity, price, quantity * price)
@@ -76,6 +80,7 @@ export const CheckoutForm = ({
 			setPlacedOrderId(orderId); // ← save orderId
 			setShowConfirm(false);
 			setOrderPlaced(true); // ← trigger success screen
+			setSheetStatus('order_placed');
 		} catch (err) {
 			setError('Something went wrong. Please try again.');
 			setShowConfirm(false);
@@ -86,7 +91,6 @@ export const CheckoutForm = ({
 
 	return (
 		<>
-			<SignInButton />
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 					<FormField
@@ -131,7 +135,7 @@ export const CheckoutForm = ({
 							Order Summary
 						</DialogTitle>
 						<DialogDescription className="text-zinc-400 text-sm mt-1">
-							Room {pendingData?.roomNo} · {cartItems.length} items
+							Room {pendingData?.roomNo} · {getItemsCount(items)} items
 						</DialogDescription>
 					</div>
 
@@ -139,7 +143,9 @@ export const CheckoutForm = ({
 					<div className="px-6 py-4 bg-zinc-50 border-t border-zinc-100">
 						<div className="flex justify-between items-center mt-2">
 							<span className="text-base font-bold text-zinc-900">Total Payable</span>
-							<span className="text-xl font-bold text-black">₹{billAmount}</span>
+							<span className="text-xl font-bold text-black">
+								₹{billAmount(items)}
+							</span>
 						</div>
 					</div>
 

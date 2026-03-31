@@ -22,6 +22,11 @@ const useCartStore = create<Cart>()(
 				set((state) => ({
 					items: state.items.map((i) => (i.product_id === id ? { ...i, quantity } : i)),
 				})),
+
+			clearCart: () =>
+				set(() => ({
+					items: [],
+				})),
 		}),
 		{
 			name: 'cart-storage',

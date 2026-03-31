@@ -5,10 +5,10 @@ import { NoRefundNotice } from '@/components/checkout/NoRefundNotice';
 import { CheckoutForm } from '@/components/checkout/CheckOutForm';
 import { useState } from 'react';
 import { OrderPlaced } from '@/components/OrderPlaced';
-import { billAmount } from '@/utils/cart.utils';
-import { cartItems } from '@/data/cart.data';
+import { billAmount, getItemsCount } from '@/utils/cart.utils';
 import { z } from 'zod';
 import { ROOM_NUMBERS } from '@/constants/allowedRooms';
+import useCartStore from '@/store/cart.store';
 
 const formSchema = z.object({
 	roomNo: z.enum(ROOM_NUMBERS),
@@ -20,14 +20,15 @@ const Page = () => {
 	const [orderPlaced, setOrderPlaced] = useState(false);
 	const [placedOrderId, setPlacedOrderId] = useState<string>('');
 	const [pendingData, setPendingData] = useState<FormData | null>(null);
+	const { items } = useCartStore();
 
 	if (orderPlaced) {
 		return (
 			<OrderPlaced
 				orderId={placedOrderId}
 				roomNo={pendingData?.roomNo ?? ''}
-				totalAmount={billAmount}
-				itemCount={cartItems.length}
+				totalAmount={billAmount(items)}
+				itemCount={getItemsCount(items)}
 			/>
 		);
 	}

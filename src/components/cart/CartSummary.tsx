@@ -6,7 +6,11 @@ import { SignInButton } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import useCartStore from '@/store/cart.store';
 
-export default function CartSummary() {
+interface CartSummaryProps {
+	setSheetStatus: (sheetStatus: 'checkout') => void;
+}
+
+export default function CartSummary({ setSheetStatus }: CartSummaryProps) {
 	const { isSignedIn, isLoaded } = useUser();
 	const router = useRouter();
 	const { items } = useCartStore();
@@ -21,7 +25,7 @@ export default function CartSummary() {
 				{isSignedIn ? (
 					<Button
 						className="w-full h-[60px] flex items-center justify-between px-5"
-						onClick={() => router.push('/checkout')}
+						onClick={() => setSheetStatus('checkout')}
 					>
 						<div className="flex flex-col text-white">
 							<span className="text-xl font-bold">₹{total}</span>
