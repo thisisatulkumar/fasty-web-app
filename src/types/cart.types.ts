@@ -6,6 +6,7 @@ export interface Item {
 	quantity: number;
 	stock: number;
 }
+
 export interface Cart {
 	items: Item[];
 	addItem: (item: Item) => void;

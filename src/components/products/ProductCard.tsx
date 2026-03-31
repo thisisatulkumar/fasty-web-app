@@ -21,7 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 				<div className="mt-2 flex items-center justify-between">
 					<p className="text-sm text-muted-foreground">₹ {product.price}</p>
 
-					<AddToCart stock={product.stock} />
+					<AddToCart product={product} stock={product.stock} />
 				</div>
 			</CardContent>
 		</Card>
