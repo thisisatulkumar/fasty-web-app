@@ -16,6 +16,18 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type OrderStatus = OrderWithDetails['status'];
@@ -168,8 +180,19 @@ interface OrderRowProps {
 const OrderRow = ({ serialNo, order }: OrderRowProps) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [status, setStatus] = useState<OrderStatus>(order.status);
+	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	const handleVerified = () => setStatus('delivered');
+
+	const handleConfirmDelivered = async () => {
+		try {
+			await updateOrderStatus(order.id, 'delivered');
+			setStatus('delivered');
+			setConfirmOpen(false);
+		} catch {
+			// TODO: handle error
+		}
+	};
 
 	return (
 		<div className="border-b border-border hover:bg-muted/50 transition-colors">
@@ -205,6 +228,30 @@ const OrderRow = ({ serialNo, order }: OrderRowProps) => {
 
 				{/* Actions */}
 				<div className="flex items-center gap-2 justify-end">
+					{status !== 'delivered' && (
+						<AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+							<AlertDialogTrigger asChild>
+								<Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+									Mark Delivered
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Confirm Delivery</AlertDialogTitle>
+									<AlertDialogDescription>
+										Are you sure this order has been delivered?
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction onClick={handleConfirmDelivered}>
+										Confirm
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					)}
+
 					{/* Expand items toggle */}
 					<Button
 						variant="ghost"
