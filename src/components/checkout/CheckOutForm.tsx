@@ -15,7 +15,6 @@ import { checkRoom } from '@/utils/checkout.utils';
 import { useUser } from '@clerk/nextjs';
 import { profileIdFromClerkId, PlaceOrder, insertOrderItems } from '@/services/checkout.services';
 import { billAmount, getItemsCount } from '@/utils/cart.utils';
-import { cartItems } from '@/data/cart.data';
 import useCartStore from '@/store/cart.store';
 
 const formSchema = z.object({
@@ -73,7 +72,7 @@ export const CheckoutForm = ({
 			const id = await profileIdFromClerkId(user.id);
 			const orderId = await PlaceOrder(pendingData.roomNo, id, billAmount(items));
 			await Promise.all(
-				cartItems.map(({ product_id, quantity, price }) =>
+				items.map(({ product_id, quantity, price }) =>
 					insertOrderItems(orderId, product_id, quantity, price, quantity * price)
 				)
 			);

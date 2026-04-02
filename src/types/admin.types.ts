@@ -18,14 +18,12 @@ export type OrderWithDetails = {
 	status: 'pending' | 'paid' | 'on_the_way' | 'delivered' | 'failed';
 	created_at: string;
 
-	// joined from profiles
 	user: {
 		id: string;
 		name: string;
 		email: string;
 	};
 
-	// joined from order_items + products
 	items: {
 		id: string;
 		quantity: number;
@@ -37,10 +35,4 @@ export type OrderWithDetails = {
 			image_url: string;
 		};
 	}[];
-
-	// only present when status = 'paid'
-	delivery_otp: {
-		otp_code: string;
-		is_verified: boolean;
-	} | null;
 };

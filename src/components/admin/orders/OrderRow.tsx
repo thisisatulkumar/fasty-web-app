@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
 import { OrderWithDetails } from '@/types/admin.types';
-import { verifyDeliveryOtp, updateOrderStatus } from '@/services/admin/orders.services';
+import { updateOrderStatus } from '@/services/admin/orders.services';
 import {
 	Dialog,
 	DialogContent,
@@ -15,6 +15,18 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -105,8 +117,6 @@ const VerifyOtpDialog = ({ orderId, expectedOtp, onVerified }: VerifyOtpDialogPr
 
 		setIsVerifying(true);
 		try {
-			// 1. Mark OTP as verified in delivery_otps table
-			await verifyDeliveryOtp(orderId);
 			// 2. Set order status to 'delivered'
 			await updateOrderStatus(orderId, 'delivered');
 			onVerified();
@@ -170,8 +180,19 @@ interface OrderRowProps {
 const OrderRow = ({ serialNo, order }: OrderRowProps) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [status, setStatus] = useState<OrderStatus>(order.status);
+	const [confirmOpen, setConfirmOpen] = useState(false);
 
 	const handleVerified = () => setStatus('delivered');
+
+	const handleConfirmDelivered = async () => {
+		try {
+			await updateOrderStatus(order.id, 'delivered');
+			setStatus('delivered');
+			setConfirmOpen(false);
+		} catch {
+			// TODO: handle error
+		}
+	};
 
 	return (
 		<div className="border-b border-border hover:bg-muted/50 transition-colors">
@@ -207,13 +228,28 @@ const OrderRow = ({ serialNo, order }: OrderRowProps) => {
 
 				{/* Actions */}
 				<div className="flex items-center gap-2 justify-end">
-					{/* OTP verify — only shown when status is 'paid' and OTP exists */}
-					{status === 'paid' && order.delivery_otp && (
-						<VerifyOtpDialog
-							orderId={order.id}
-							expectedOtp={order.delivery_otp.otp_code}
-							onVerified={handleVerified}
-						/>
+					{status !== 'delivered' && (
+						<AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+							<AlertDialogTrigger asChild>
+								<Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+									Mark Delivered
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Confirm Delivery</AlertDialogTitle>
+									<AlertDialogDescription>
+										Are you sure this order has been delivered?
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction onClick={handleConfirmDelivered}>
+										Confirm
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					)}
 
 					{/* Expand items toggle */}
