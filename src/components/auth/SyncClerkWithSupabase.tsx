@@ -21,11 +21,11 @@ const SyncClerkWithSupabase = () => {
 
 			if (isEmailAllowed(email)) {
 				await syncProfile({
-					id: user.id,
-					email: email,
-					first_name: user.firstName ?? '',
-					last_name: user.lastName ?? '',
-					image_url: user.imageUrl ?? '',
+					clerkId: user.id,
+					email,
+					firstName: user.firstName ?? '',
+					lastName: user.lastName ?? '',
+					imageUrl: user.imageUrl ?? '',
 				});
 			} else {
 				setShowPopup(true);
