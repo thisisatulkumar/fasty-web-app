@@ -8,7 +8,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-	const { imageUrl, name, price, stock } = product;
+	const { imageUrl, name, price } = product;
 
 	return (
 		<Card className="overflow-hidden">
@@ -26,7 +26,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 				<div className="mt-2 flex items-center justify-between">
 					<p className="text-sm text-muted-foreground">₹ {price}</p>
 
-					<AddToCart product={product} stock={stock} />
+					<AddToCart product={product} />
 				</div>
 			</CardContent>
 		</Card>
