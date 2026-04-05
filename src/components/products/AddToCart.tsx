@@ -15,11 +15,11 @@ export default function AddToCart({ product, stock }: AddToCartProps) {
 	const quantity = getItemQuantity(product.id, items);
 
 	const handleAddItem = () => {
-		const { id, image_url, name, price, stock } = product;
+		const { id, imageUrl, name, price, stock } = product;
 		const item = {
 			product_id: id,
 			name,
-			image: image_url,
+			image: imageUrl,
 			price,
 			quantity: 1,
 			stock,

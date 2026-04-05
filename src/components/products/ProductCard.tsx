@@ -11,7 +11,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 		<Card className="overflow-hidden">
 			<CardContent className="p-3">
 				<img
-					src={product.image_url}
+					src={product.imageUrl}
 					alt={product.name}
 					className="w-full h-40 object-cover rounded-md"
 				/>
