@@ -34,7 +34,7 @@ const WrongEmailPopup = ({ open, onClose }: WrongEmailPopupProps) => {
 				</DialogHeader>
 				<DialogFooter className="mt-4">
 					<Button className="w-full" onClick={onClose}>
-						OK, Got it
+						Got it!
 					</Button>
 				</DialogFooter>
 			</DialogContent>
