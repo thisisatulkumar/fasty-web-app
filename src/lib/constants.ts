@@ -12,7 +12,7 @@ export const DB_TABLES: Record<string, TableNames> = {
 	PAYMENTS: 'payments',
 	PRODUCTS: 'products',
 	PROFILES: 'profiles',
-} as const;
+} as const satisfies Record<string, TableNames>;
 
 export const ALLOWED_EMAILS_DOMAIN = 'ietlucknow.ac.in';
 
