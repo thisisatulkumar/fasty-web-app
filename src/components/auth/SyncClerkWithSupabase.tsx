@@ -29,8 +29,12 @@ const SyncClerkWithSupabase = () => {
 				});
 			} else {
 				setShowPopup(true);
-				await user?.delete();
-				await signOut();
+
+				try {
+					await user?.delete();
+				} finally {
+					await signOut();
+				}
 			}
 		};
 
