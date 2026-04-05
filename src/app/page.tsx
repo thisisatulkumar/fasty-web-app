@@ -1,13 +1,15 @@
 import { Suspense } from 'react';
-import { getProducts } from '@/services/product.service';
 import ProductGrid from '@/components/products/ProductGrid';
+import ProductGridSkeleton from '@/components/products/ProductSkeletonGrid';
+import { ErrorBoundary } from 'react-error-boundary';
+import ProductError from '@/components/products/ProductError';
 
-export default async function HomePage() {
-	const products = await getProducts();
-
+export default function HomePage() {
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<ProductGrid products={products} />
-		</Suspense>
+		<ErrorBoundary FallbackComponent={ProductError}>
+			<Suspense fallback={<ProductGridSkeleton />}>
+				<ProductGrid />
+			</Suspense>
+		</ErrorBoundary>
 	);
 }
