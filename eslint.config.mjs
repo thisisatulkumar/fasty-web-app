@@ -26,6 +26,11 @@ export default [
 		},
 	},
 
+	// Files to ignore
+	{
+		ignores: ['src/types/supabase.ts'],
+	},
+
 	// Test-specific overrides
 	{
 		files: ['src/tests/**/*.{ts,tsx}'],
