@@ -1,5 +1,5 @@
-import { ROOM_NUMBERS } from '@/constants/allowedRooms';
+import { ROOM_NUMBERS } from '@/lib/constants';
 
-export const checkRoom = (roomno: string): boolean => {
-	return (ROOM_NUMBERS as readonly string[]).includes(roomno);
+export const isRoomNoValid = (roomNo: string): boolean => {
+	return (ROOM_NUMBERS as readonly string[]).includes(roomNo);
 };

@@ -1,39 +1,34 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import { Cart, Item } from '../types/cart.types';
+import { Cart, CartItem } from '../types/cart.types';
 
 const useCartStore = create<Cart>()(
 	persist(
-		(set, get) => ({
+		(set) => ({
 			items: [],
 
-			addItem: (item: Item) =>
+			addItem: (item: CartItem) =>
 				set((state) => ({
 					items: [...state.items, item],
 				})),
 
 			removeItem: (id: string) =>
 				set((state) => ({
-					items: state.items.filter((i) => i.product_id !== id),
+					items: state.items.filter((item) => item.productId !== id),
 				})),
 
 			updateQuantity: (id: string, quantity: number) =>
 				set((state) => ({
-					items: state.items.map((i) => (i.product_id === id ? { ...i, quantity } : i)),
+					items: state.items.map((item) =>
+						item.productId === id ? { ...item, quantity } : item
+					),
 				})),
 
 			clearCart: () =>
 				set(() => ({
 					items: [],
 				})),
-
-			getTotal: () => get().items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-
-			getItemCount: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
-
-			getItemQuantity: (id: string) =>
-				get().items.find((item) => item.product_id === id)?.quantity ?? 0,
 		}),
 		{
 			name: 'cart-storage',

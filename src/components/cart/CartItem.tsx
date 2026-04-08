@@ -1,8 +1,15 @@
 import { Item, ItemContent } from '@/components/ui/item';
-import { Item as _Item } from '@/types/cart.types';
+import { CartItem as CartItemProps } from '@/types/cart.types';
 import ProductQuantitySelector from '../shared/ProductQuantitySelector';
 
-export default function CartItem({ product_id, image, name, price, quantity, stock }: _Item) {
+export default function CartItem({
+	productId,
+	image,
+	name,
+	price,
+	quantity,
+	stock,
+}: CartItemProps) {
 	return (
 		<Item variant="outline" className="w-90 p-4 rounded-xl bg-white" style={{ margin: '10px' }}>
 			<ItemContent>
@@ -15,7 +22,7 @@ export default function CartItem({ product_id, image, name, price, quantity, sto
 					</div>
 
 					<ProductQuantitySelector
-						productId={product_id}
+						productId={productId}
 						quantity={quantity}
 						stock={stock}
 					/>

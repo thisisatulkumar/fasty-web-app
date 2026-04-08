@@ -11,7 +11,7 @@ export default function CartItemsGrid() {
 	return (
 		<div className="flex flex-col overflow-y-auto">
 			{items.map((item) => (
-				<CartItem key={item.product_id} {...item} />
+				<CartItem key={item.productId} {...item} />
 			))}
 		</div>
 	);

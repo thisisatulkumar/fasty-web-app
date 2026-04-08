@@ -1,5 +1,5 @@
-export interface Item {
-	product_id: string;
+export interface CartItem {
+	productId: string;
 	name: string;
 	image: string;
 	price: number;
@@ -8,12 +8,9 @@ export interface Item {
 }
 
 export interface Cart {
-	items: Item[];
-	addItem: (item: Item) => void;
+	items: CartItem[];
+	addItem: (item: CartItem) => void;
 	removeItem: (id: string) => void;
 	updateQuantity: (id: string, quantity: number) => void;
 	clearCart: () => void;
-	getTotal: () => number;
-	getItemCount: () => number;
-	getItemQuantity: (id: string) => number;
 }

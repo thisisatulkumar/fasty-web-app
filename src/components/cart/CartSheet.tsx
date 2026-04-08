@@ -13,11 +13,11 @@ import CartItemsGrid from './CartItemsGrid';
 import CartSummary from './CartSummary';
 import useSheetFlow from '@/hooks/useSheetFlow';
 import { OrderPlaced } from '../OrderPlaced';
-import { billAmount, getItemsCount } from '@/utils/cart.utils';
 import { SummaryTable } from '../checkout/OrderSummary';
 import { NoRefundNotice } from '../checkout/NoRefundNotice';
 import { CheckoutForm } from '../checkout/CheckOutForm';
 import CartButton from '../navbar/CartButton';
+import { useCartCount, useCartTotal } from '@/store/cart.selectors';
 
 export default function CartSheet() {
 	const {
@@ -30,6 +30,9 @@ export default function CartSheet() {
 		setPendingData,
 		setPlacedOrderId,
 	} = useSheetFlow();
+
+	const total = useCartTotal();
+	const itemsCount = useCartCount();
 
 	return (
 		<div className="flex flex-wrap gap-2">
@@ -87,8 +90,8 @@ export default function CartSheet() {
 						<OrderPlaced
 							orderId={placedOrderId}
 							roomNo={pendingData?.roomNo ?? ''}
-							totalAmount={billAmount(items)}
-							itemCount={getItemsCount(items)}
+							totalAmount={total}
+							itemCount={itemsCount}
 							setSheetStatus={setSheetStatus}
 						/>
 						<SheetFooter></SheetFooter>

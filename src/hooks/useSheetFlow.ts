@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useCartStore from '@/store/cart.store';
 import { z } from 'zod';
-import { ROOM_NUMBERS } from '@/constants/allowedRooms';
+import { ROOM_NUMBERS } from '@/lib/constants';
 
 const formSchema = z.object({
 	roomNo: z.enum(ROOM_NUMBERS),
