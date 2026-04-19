@@ -11,6 +11,7 @@ export async function getProducts(): Promise<Product[]> {
 	const { data, error } = await supabase
 		.from(DB_TABLES.PRODUCTS)
 		.select('*')
+		.gt('stock', 0)
 		.overrideTypes<DatabaseProduct[]>();
 
 	if (error) {
