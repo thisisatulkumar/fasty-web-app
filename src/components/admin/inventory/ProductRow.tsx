@@ -34,30 +34,25 @@ const ProductRow = ({ serialNo, product }: ProductRowProps) => {
 
 	return (
 		<div className="grid grid-cols-[40px_56px_1fr_100px_140px_80px] items-center gap-4 px-4 py-3 border-b border-border hover:bg-muted/50 transition-colors">
-			{/* Serial No */}
 			<span className="text-sm text-muted-foreground text-center">{serialNo}</span>
 
-			{/* Image */}
 			<img
 				src={product.image_url}
 				alt={product.name}
 				className="w-10 h-10 rounded-md object-cover border border-border"
 			/>
 
-			{/* Name */}
 			<span className="text-sm font-medium truncate">{product.name}</span>
 
-			{/* Price */}
 			<span className="text-sm font-semibold">₹{product.price}</span>
 
-			{/* Stock +/- */}
 			<ButtonGroup>
 				<Button
 					variant="outline"
 					size="icon"
 					className="h-8 w-8 text-base select-none"
 					onClick={handleMinusClick}
-					disabled={isIncrementingStock || isDecrementingStock}
+					disabled={isIncrementingStock || isDecrementingStock || stock === 0}
 				>
 					{isDecrementingStock ? <Spinner /> : <span>&minus;</span>}
 				</Button>
@@ -78,7 +73,6 @@ const ProductRow = ({ serialNo, product }: ProductRowProps) => {
 				</Button>
 			</ButtonGroup>
 
-			{/* Actions */}
 			<div className="flex items-center gap-2 justify-end">
 				<AddOrUpdateProductSheet
 					isEdit={true}

@@ -12,6 +12,7 @@ export async function getProducts(): Promise<Product[]> {
 		.from(DB_TABLES.PRODUCTS)
 		.select('*')
 		.gt('stock', 0)
+		.eq('is_deleted', false)
 		.overrideTypes<DatabaseProduct[]>();
 
 	if (error) {

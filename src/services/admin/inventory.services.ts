@@ -13,6 +13,7 @@ export const getProducts = async () => {
 	const { data, error } = await supabase
 		.from(DB_TABLES.PRODUCTS)
 		.select()
+		.eq('is_deleted', false)
 		.order('name', { ascending: true });
 
 	if (error) throw { message: 'Failed to fetch products' };
@@ -36,7 +37,10 @@ export const updateProduct = async (
 };
 
 export const deleteProduct = async (productId: string) => {
-	const { error } = await supabase.from(DB_TABLES.PRODUCTS).delete().eq('id', productId);
+	const { error } = await supabase
+		.from(DB_TABLES.PRODUCTS)
+		.update({ is_deleted: true })
+		.eq('id', productId);
 
 	if (error) throw { message: 'Failed to delete product' };
 };
