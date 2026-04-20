@@ -28,7 +28,7 @@ interface CheckoutFormProps {
 	setOrderPlaced: (orderPlaced: boolean) => void;
 	setPlacedOrderId: (orderId: string) => void;
 	setPendingData: (pendingData: FormData | null) => void;
-	setSheetStatus: (sheetStatus: 'order_placed') => void;
+	setSheetStatus: (sheetStatus: 'order_placed' | 'cart') => void;
 }
 
 export const CheckoutForm = ({
@@ -125,7 +125,11 @@ export const CheckoutForm = ({
 						<Button type="submit" className="w-full">
 							Place Order
 						</Button>
-						<Button variant="outline" className="w-full">
+						<Button
+							variant="outline"
+							className="w-full"
+							onClick={() => setSheetStatus('cart')}
+						>
 							Go Back
 						</Button>
 					</div>
