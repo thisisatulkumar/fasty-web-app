@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
 	Drawer,
 	DrawerTrigger,
@@ -15,7 +15,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { addProduct, updateProduct } from '@/services/admin/inventory.services';
+import { addProduct, updateProduct, uploadProductImage } from '@/services/admin/inventory.services';
+import { Upload, X } from 'lucide-react';
 
 interface AddOrUpdateProductSheetProps {
 	isEdit: boolean;
@@ -39,10 +40,75 @@ const AddOrUpdateProductSheet = ({
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [isAdding, setIsAdding] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
-	const [imageUrl, setImageUrl] = useState(productImageUrl || '');
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [previewUrl, setPreviewUrl] = useState<string>(productImageUrl || '');
 	const [name, setName] = useState(productName || '');
 	const [price, setPrice] = useState(productPrice || 0);
 	const [stock, setStock] = useState(productStock || 0);
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		return () => {
+			if (previewUrl && previewUrl.startsWith('blob:')) {
+				URL.revokeObjectURL(previewUrl);
+			}
+		};
+	}, [previewUrl]);
+
+	useEffect(() => {
+		if (!drawerOpen) {
+			// Clean up when drawer closes
+			if (previewUrl && previewUrl.startsWith('blob:')) {
+				URL.revokeObjectURL(previewUrl);
+			}
+			setSelectedFile(null);
+			setPreviewUrl(productImageUrl || '');
+			if (fileInputRef.current) {
+				fileInputRef.current.value = '';
+			}
+		}
+	}, [drawerOpen, productImageUrl]);
+
+	const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			// Validate file type
+			if (!file.type.startsWith('image/')) {
+				alert('Please select an image file');
+				return;
+			}
+
+			setSelectedFile(file);
+			const url = URL.createObjectURL(file);
+			setPreviewUrl(url);
+		}
+	};
+
+	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		const file = e.dataTransfer.files?.[0];
+		if (file) {
+			// Validate file type
+			if (!file.type.startsWith('image/')) {
+				alert('Please select an image file');
+				return;
+			}
+
+			// Validate file size (10MB max)
+			if (file.size > 10 * 1024 * 1024) {
+				alert('File size must be less than 10MB');
+				return;
+			}
+
+			setSelectedFile(file);
+			const url = URL.createObjectURL(file);
+			setPreviewUrl(url);
+		}
+	};
+
+	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+	};
 
 	const handleAdd = async () => {
 		if (name.trim().length === 0) return;
@@ -50,9 +116,18 @@ const AddOrUpdateProductSheet = ({
 		if (stock < 0) return;
 
 		setIsAdding(true);
-		await addProduct(imageUrl, name, price, stock);
-		setIsAdding(false);
-		setDrawerOpen(false);
+		try {
+			let finalImageUrl = '';
+			if (selectedFile) {
+				finalImageUrl = await uploadProductImage(selectedFile);
+			}
+			await addProduct(finalImageUrl, name, price, stock);
+			setDrawerOpen(false);
+		} catch (error) {
+			alert('Failed to add product. Please try again.');
+		} finally {
+			setIsAdding(false);
+		}
 	};
 
 	const handleEdit = async () => {
@@ -62,9 +137,18 @@ const AddOrUpdateProductSheet = ({
 		if (stock < 0) return;
 
 		setIsEditing(true);
-		await updateProduct(productId, imageUrl, name, price, stock);
-		setIsEditing(false);
-		setDrawerOpen(false);
+		try {
+			let finalImageUrl = productImageUrl || '';
+			if (selectedFile) {
+				finalImageUrl = await uploadProductImage(selectedFile);
+			}
+			await updateProduct(productId, finalImageUrl, name, price, stock);
+			setDrawerOpen(false);
+		} catch (error) {
+			alert('Failed to update product. Please try again.');
+		} finally {
+			setIsEditing(false);
+		}
 	};
 
 	return (
@@ -90,21 +174,60 @@ const AddOrUpdateProductSheet = ({
 
 					<form className="flex flex-col gap-4">
 						<div className="flex flex-col gap-3">
-							<Label htmlFor="title">Image URL</Label>
-							<Input
-								id="image"
-								type="url"
-								placeholder="Image URL (Supabase Bucket)"
-								value={imageUrl}
-								onChange={(e) => setImageUrl(e.target.value)}
+							<Label>Product Image</Label>
+							{previewUrl ? (
+								<div className="relative">
+									<img
+										src={previewUrl}
+										alt="Product preview"
+										className="w-full h-48 object-cover rounded-lg border"
+									/>
+									<Button
+										type="button"
+										variant="destructive"
+										size="sm"
+										className="absolute top-2 right-2"
+										onClick={() => {
+											setSelectedFile(null);
+											setPreviewUrl('');
+											if (fileInputRef.current) {
+												fileInputRef.current.value = '';
+											}
+										}}
+									>
+										<X className="h-4 w-4" />
+									</Button>
+								</div>
+							) : (
+								<div
+									className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
+									onDrop={handleDrop}
+									onDragOver={handleDragOver}
+									onClick={() => fileInputRef.current?.click()}
+								>
+									<Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+									<p className="text-sm text-muted-foreground mb-1">
+										Click to upload or drag and drop
+									</p>
+									<p className="text-xs text-muted-foreground">
+										Any image file is accepted
+									</p>
+								</div>
+							)}
+							<input
+								ref={fileInputRef}
+								type="file"
+								accept="image/*"
+								onChange={handleFileSelect}
+								className="hidden"
 							/>
 						</div>
 
 						<div className="flex flex-col gap-3">
-							<Label htmlFor="title">Name</Label>
+							<Label htmlFor="name">Name</Label>
 							<Input
 								id="name"
-								placeholder="Name"
+								placeholder="Product name"
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 							/>

@@ -1,6 +1,25 @@
 import { DB_TABLES } from '@/lib/constants';
 import { supabase } from '@/lib/supabase/client';
 
+export const uploadProductImage = async (file: File): Promise<string> => {
+	const fileExt = file.name.split('.').pop();
+	const fileName = `${Date.now()}.${fileExt}`;
+	const filePath = `/${fileName}`;
+
+	const { error: uploadError } = await supabase.storage
+		.from('product_images')
+		.upload(filePath, file);
+
+	if (uploadError) throw { message: uploadError };
+
+	if (uploadError) throw { message: 'Failed to upload image' };
+
+	const { data } = supabase.storage.from('product_images').getPublicUrl(filePath);
+
+	if (!data.publicUrl) throw { message: 'Failed to get image URL' };
+	return data.publicUrl;
+};
+
 export const addProduct = async (image_url: string, name: string, price: number, stock: number) => {
 	const { error } = await supabase
 		.from(DB_TABLES.PRODUCTS)
