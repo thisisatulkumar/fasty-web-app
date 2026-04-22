@@ -1,6 +1,34 @@
 import useCartStore from '@/store/cart.store';
 import { useEffect, useState, useRef } from 'react';
 
+const TIME_SLOTS = [
+	{ start: '10:00', end: '10:15', period: 'AM' },
+	{ start: '12:15', end: '12:30', period: 'PM' },
+	{ start: '16:50', end: '17:00', period: 'PM' },
+	{ start: '19:45', end: '20:00', period: 'PM' },
+	{ start: '22:00', end: '22:15', period: 'PM' },
+	{ start: '23:50', end: '00:00', period: 'AM' },
+];
+
+const getNextTimeSlot = (): string => {
+	const now = new Date();
+	const currentHours = now.getHours();
+	const currentMinutes = now.getMinutes();
+	const currentTimeInMinutes = currentHours * 60 + currentMinutes;
+
+	for (const slot of TIME_SLOTS) {
+		const [startHours, startMinutes] = slot.start.split(':').map(Number);
+		const slotStartInMinutes = startHours * 60 + startMinutes;
+
+		if (slotStartInMinutes > currentTimeInMinutes) {
+			return `${slot.start}-${slot.end} ${slot.period}`;
+		}
+	}
+
+	// If no slot found today, return the first slot (tomorrow)
+	return `${TIME_SLOTS[0].start}-${TIME_SLOTS[0].end} ${TIME_SLOTS[0].period}`;
+};
+
 export const OrderPlaced = ({
 	orderId,
 	roomNo,
@@ -19,7 +47,13 @@ export const OrderPlaced = ({
 	const [step, setStep] = useState(0);
 	const { clearCart } = useCartStore();
 
-	const info = useRef({ orderId, roomNo, totalAmount, itemCount });
+	const info = useRef({
+		orderId,
+		roomNo,
+		totalAmount,
+		itemCount,
+		deliverySlot: getNextTimeSlot(),
+	});
 
 	useEffect(() => {
 		const timers = [
@@ -155,7 +189,13 @@ export const OrderPlaced = ({
 						value: `${info.current.itemCount} item${info.current.itemCount > 1 ? 's' : ''}`,
 					},
 					{ label: 'Total', value: `₹${info.current.totalAmount}`, highlight: true },
-				].map(({ label, value, highlight }, i) => (
+					{
+						label: 'Delivery Slot',
+						value: info.current.deliverySlot,
+						highlight: true,
+						bold: true,
+					},
+				].map(({ label, value, highlight, bold }, i) => (
 					<div
 						key={label}
 						style={{
@@ -163,7 +203,8 @@ export const OrderPlaced = ({
 							justifyContent: 'space-between',
 							alignItems: 'center',
 							padding: '14px 20px',
-							borderBottom: i < 3 ? '0.5px solid #1f1f1f' : 'none',
+							borderBottom: i < 4 ? '0.5px solid #1f1f1f' : 'none',
+							backgroundColor: bold ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
 						}}
 					>
 						<span style={{ color: '#555', fontSize: '0.875rem' }}>{label}</span>
@@ -171,7 +212,7 @@ export const OrderPlaced = ({
 							style={{
 								color: highlight ? '#fff' : '#aaa',
 								fontSize: highlight ? '1rem' : '0.875rem',
-								fontWeight: highlight ? '700' : '500',
+								fontWeight: bold ? '700' : highlight ? '700' : '500',
 							}}
 						>
 							{value}
@@ -200,7 +241,7 @@ export const OrderPlaced = ({
 					(e.target as HTMLButtonElement).style.borderColor = '#555';
 				}}
 				onMouseLeave={(e) => {
-					(e.target as HTMLButtonElement).style.color = '#555';
+					(e.target as HTMLButtonElement).style.color = '#aaa';
 					(e.target as HTMLButtonElement).style.borderColor = '#2a2a2a';
 				}}
 			>
@@ -208,11 +249,11 @@ export const OrderPlaced = ({
 			</button>
 
 			<style>{`
-                @keyframes pulse {
-                    0%, 100% { opacity: 1; transform: scale(1); }
-                    50% { opacity: 0.5; transform: scale(0.85); }
-                }
-            `}</style>
+				@keyframes pulse {
+					0%, 100% { opacity: 1; transform: scale(1); }
+					50% { opacity: 0.5; transform: scale(0.85); }
+				}
+			`}</style>
 		</div>
 	);
 };
