@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,13 +51,13 @@ export const CheckoutForm = ({
 	const roomNumRef = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
-		if (!roomNumRef.current) return;
-
 		const savedRoomNumber = getItem(LOCAL_STORAGE_KEYS.ROOM_NUMBER);
-		if (savedRoomNumber) {
-			roomNumRef.current.value = savedRoomNumber;
+		const result = formSchema.shape.roomNo.safeParse(savedRoomNumber);
+
+		if (result.success) {
+			form.setValue('roomNo', result.data);
 		}
-	}, [roomNumRef]);
+	}, []);
 
 	const form = useForm<FormData>({
 		resolver: zodResolver(formSchema),
