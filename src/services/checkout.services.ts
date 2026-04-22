@@ -45,4 +45,27 @@ export const insertOrderItems = async (
 
 	const { error } = await supabase.from('order_items').upsert(payload);
 	if (error) throw error;
+
+	// FIXME: Very bad practice. Write a supabase trigger
+	await decreaseStock(productId, quantity);
+};
+
+// FIXME: Write a supabase trigger for this since that's atomic
+export const decreaseStock = async (productId: string, quantity: number) => {
+	const { data, error: fetchError } = await supabase
+		.from('products')
+		.select('stock')
+		.eq('id', productId)
+		.single();
+
+	if (fetchError) throw fetchError;
+
+	const newStock = Math.max(0, (data?.stock || 0) - quantity);
+
+	const { error: updateError } = await supabase
+		.from('products')
+		.update({ stock: newStock })
+		.eq('id', productId);
+
+	if (updateError) throw updateError;
 };
