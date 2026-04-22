@@ -107,7 +107,6 @@ export default function CartSheet() {
 							setSheetStatus={setSheetStatus}
 							closeSheet={closeSheet}
 						/>
-						<SheetFooter></SheetFooter>
 					</SheetContent>
 				)}
 			</Sheet>

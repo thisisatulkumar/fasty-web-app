@@ -1,5 +1,5 @@
 import useCartStore from '@/store/cart.store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export const OrderPlaced = ({
 	orderId,
@@ -19,6 +19,8 @@ export const OrderPlaced = ({
 	const [step, setStep] = useState(0);
 	const { clearCart } = useCartStore();
 
+	const info = useRef({ orderId, roomNo, totalAmount, itemCount });
+
 	useEffect(() => {
 		const timers = [
 			setTimeout(() => setStep(1), 100),
@@ -26,11 +28,11 @@ export const OrderPlaced = ({
 			setTimeout(() => setStep(3), 1000),
 			setTimeout(() => setStep(4), 1400),
 		];
+		clearCart();
 		return () => timers.forEach(clearTimeout);
 	}, []);
 
 	const handleBackToHome = () => {
-		clearCart();
 		setSheetStatus('cart');
 		closeSheet();
 	};
@@ -143,10 +145,16 @@ export const OrderPlaced = ({
 			>
 				{/* Card Row */}
 				{[
-					{ label: 'Order ID', value: `#${orderId.slice(0, 8).toUpperCase()}` },
-					{ label: 'Room No.', value: roomNo },
-					{ label: 'Items', value: `${itemCount} item${itemCount > 1 ? 's' : ''}` },
-					{ label: 'Total', value: `₹${totalAmount}`, highlight: true },
+					{
+						label: 'Order ID',
+						value: `#${info.current.orderId.slice(0, 8).toUpperCase()}`,
+					},
+					{ label: 'Room No.', value: info.current.roomNo },
+					{
+						label: 'Items',
+						value: `${info.current.itemCount} item${info.current.itemCount > 1 ? 's' : ''}`,
+					},
+					{ label: 'Total', value: `₹${info.current.totalAmount}`, highlight: true },
 				].map(({ label, value, highlight }, i) => (
 					<div
 						key={label}
