@@ -13,7 +13,12 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { ROOM_NUMBERS } from '@/lib/constants';
 import { isRoomNoValid } from '@/utils/checkout.utils';
 import { useUser } from '@clerk/nextjs';
-import { profileIdFromClerkId, placeOrder, insertOrderItems } from '@/services/checkout.services';
+import {
+	profileIdFromClerkId,
+	placeOrder,
+	insertOrderItems,
+	revalidateProducts,
+} from '@/services/checkout.services';
 import useCartStore from '@/store/cart.store';
 import { useCartCount, useCartTotal } from '@/store/cart.selectors';
 import useLocalStorage from '@/hooks/useLocalStorage';
@@ -96,6 +101,7 @@ export const CheckoutForm = ({
 			setShowConfirm(false);
 			setOrderPlaced(true); // ← trigger success screen
 			setSheetStatus('order_placed');
+			await revalidateProducts(); // ← update products page with new stock
 		} catch (err) {
 			setError('Something went wrong. Please try again.');
 			setShowConfirm(false);

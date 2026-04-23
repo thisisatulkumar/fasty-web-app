@@ -1,3 +1,6 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
 import { supabase } from '@/lib/supabase/client';
 import type { RoomNumber } from '@/types/checkout.types';
 import { Database } from '@/types/supabase';
@@ -68,4 +71,8 @@ export const decreaseStock = async (productId: string, quantity: number) => {
 		.eq('id', productId);
 
 	if (updateError) throw updateError;
+};
+
+export const revalidateProducts = async () => {
+	revalidatePath('/', 'layout');
 };
