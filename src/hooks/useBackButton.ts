@@ -2,29 +2,50 @@
 
 import { useEffect, useRef } from 'react';
 
-const useBackButton = (onBack: () => void): void => {
+type Handler = () => void;
+const handlerStack: Handler[] = [];
+let listenerAttached = false;
+
+function ensureListener() {
+	if (listenerAttached) return;
+	listenerAttached = true;
+
+	window.addEventListener('popstate', (e: PopStateEvent) => {
+		if (e.state?.__backIntercept !== true) return;
+		const top = handlerStack[handlerStack.length - 1];
+		if (!top) return;
+		queueMicrotask(() => top());
+	});
+}
+
+export function pushSentinel() {
+	if (typeof window === 'undefined') return;
+	ensureListener();
+	window.history.pushState(
+		{ __backIntercept: true },
+		'',
+		window.location.pathname + window.location.search
+	);
+}
+
+export function removeSentinels(count: number) {
+	if (typeof window === 'undefined' || count <= 0) return;
+	window.history.go(-count);
+}
+
+export function useBackButton(onBack: () => void, active = true) {
 	const onBackRef = useRef(onBack);
-
-	// Keep ref up to date without triggering effect re-runs
-	useEffect(() => {
-		onBackRef.current = onBack;
-	}, [onBack]);
+	onBackRef.current = onBack;
 
 	useEffect(() => {
-		window.history.pushState({ intercepted: true }, '');
+		if (!active) return;
 
-		const handlePopState = (): void => {
-			window.history.pushState({ intercepted: true }, '');
-			onBackRef.current(); // always calls latest version
-		};
-
-		window.addEventListener('popstate', handlePopState);
+		const handler: Handler = () => onBackRef.current();
+		handlerStack.push(handler);
 
 		return () => {
-			window.removeEventListener('popstate', handlePopState);
-			window.history.back();
+			const idx = handlerStack.lastIndexOf(handler);
+			if (idx !== -1) handlerStack.splice(idx, 1);
 		};
-	}, []);
-};
-
-export default useBackButton;
+	}, [active]);
+}
