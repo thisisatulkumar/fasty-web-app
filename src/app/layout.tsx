@@ -5,6 +5,7 @@ import Navbar from '@/components/navbar/Navbar';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Metadata } from 'next';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
 	title: 'Fastyy',
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<SyncClerkWithSupabase />
 					<Navbar />
 					{children}
+					<Footer />
 				</ClerkProvider>
 				<Analytics />
 				<SpeedInsights />
