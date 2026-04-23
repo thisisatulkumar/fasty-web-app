@@ -8,8 +8,13 @@ import { groupOrdersByDate } from '@/utils/orders.utils';
 import { useAuth } from '@clerk/nextjs';
 import { Separator } from '@/components/ui/separator';
 import { profileIdFromClerkId } from '@/services/checkout.services';
+import { Button } from '../ui/button';
 
-export default function MyOrderItemsGrid() {
+interface MyOrderItemsGridProps {
+	closeSheet: () => void;
+}
+
+export default function MyOrderItemsGrid({ closeSheet }: MyOrderItemsGridProps) {
 	const [orders, setOrders] = useState<OrdersGroupedByDate[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -65,8 +70,11 @@ export default function MyOrderItemsGrid() {
 						No orders yet
 					</p>
 					<p className="text-xs md:text-sm text-gray-500 mt-1">
-						You haven't placed any orders. Start shopping now!
+						You haven't placed any orders.
 					</p>
+					<Button variant="outline" onClick={closeSheet} className="mt-4">
+						Shop Now
+					</Button>
 				</div>
 			</div>
 		);

@@ -90,7 +90,7 @@ const MyOrdersSheet = () => {
 						<SheetDescription>Your order history</SheetDescription>
 					</SheetHeader>
 
-					<MyOrderItemsGrid />
+					<MyOrderItemsGrid closeSheet={closeSheet} />
 				</SheetContent>
 			</Sheet>
 		</div>
