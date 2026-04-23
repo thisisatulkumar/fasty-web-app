@@ -18,8 +18,9 @@ import { NoRefundNotice } from '../checkout/NoRefundNotice';
 import { CheckoutForm } from '../checkout/CheckOutForm';
 import CartButton from '../navbar/CartButton';
 import { useCartCount, useCartTotal } from '@/store/cart.selectors';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import useBackButton from '@/hooks/useBackButton';
 
 export default function CartSheet() {
 	const {
@@ -47,6 +48,18 @@ export default function CartSheet() {
 	};
 
 	const isMobile = useIsMobile();
+
+	const handleBack = useCallback(() => {
+		if (isMobile) {
+			if (sheetStatus === 'cart' || sheetStatus === 'order_placed') {
+				closeSheet();
+			} else if (sheetStatus === 'checkout') {
+				setSheetStatus('cart');
+			}
+		}
+	}, [isMobile, sheetStatus, closeSheet, setSheetStatus]);
+
+	useBackButton(handleBack);
 
 	return (
 		<div className="flex flex-wrap gap-2">
