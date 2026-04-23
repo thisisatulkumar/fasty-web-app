@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import useCartStore from '@/store/cart.store';
 import { ComponentProps } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function CartButton({ ...props }: ComponentProps<typeof Button>) {
+	const isMobile = useIsMobile();
+
 	const itemCount = useCartStore((state) =>
 		state.items.reduce((sum, item) => sum + item.quantity, 0)
 	);
@@ -14,7 +17,7 @@ export default function CartButton({ ...props }: ComponentProps<typeof Button>) 
 	return (
 		<Button
 			variant="ghost"
-			size="icon"
+			size={isMobile ? 'sm' : 'icon'}
 			className="relative border border-gray-200 rounded-md hover:bg-gray-100"
 			{...props}
 		>

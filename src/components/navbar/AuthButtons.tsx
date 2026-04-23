@@ -3,9 +3,11 @@
 import { Button } from '@/components/ui/button';
 import { useAuth, SignInButton, SignOutButton } from '@clerk/nextjs';
 import { Spinner } from '@/components/ui/spinner';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function AuthButtons() {
 	const { isSignedIn, isLoaded } = useAuth();
+	const isMobile = useIsMobile();
 
 	if (!isLoaded) {
 		return (
@@ -19,11 +21,11 @@ export default function AuthButtons() {
 		<div className="flex items-center">
 			{isSignedIn ? (
 				<SignOutButton>
-					<Button>Sign Out</Button>
+					<Button size={isMobile ? 'sm' : 'default'}>Logout</Button>
 				</SignOutButton>
 			) : (
 				<SignInButton mode="modal">
-					<Button>Sign In</Button>
+					<Button>Login</Button>
 				</SignInButton>
 			)}
 		</div>

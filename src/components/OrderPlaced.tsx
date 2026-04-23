@@ -1,33 +1,6 @@
 import useCartStore from '@/store/cart.store';
 import { useEffect, useState, useRef } from 'react';
-
-const TIME_SLOTS = [
-	{ start: '10:00', end: '10:15', period: 'AM' },
-	{ start: '12:15', end: '12:30', period: 'PM' },
-	{ start: '16:50', end: '17:00', period: 'PM' },
-	{ start: '19:45', end: '20:00', period: 'PM' },
-	{ start: '22:00', end: '22:15', period: 'PM' },
-	{ start: '23:50', end: '00:00', period: 'AM' },
-];
-
-const getNextTimeSlot = (): string => {
-	const now = new Date();
-	const currentHours = now.getHours();
-	const currentMinutes = now.getMinutes();
-	const currentTimeInMinutes = currentHours * 60 + currentMinutes;
-
-	for (const slot of TIME_SLOTS) {
-		const [startHours, startMinutes] = slot.start.split(':').map(Number);
-		const slotStartInMinutes = startHours * 60 + startMinutes;
-
-		if (slotStartInMinutes > currentTimeInMinutes) {
-			return `${slot.start}-${slot.end} ${slot.period}`;
-		}
-	}
-
-	// If no slot found today, return the first slot (tomorrow)
-	return `${TIME_SLOTS[0].start}-${TIME_SLOTS[0].end} ${TIME_SLOTS[0].period}`;
-};
+import { getNextTimeSlot, formatDeliverySlot } from '@/utils/orders.utils';
 
 export const OrderPlaced = ({
 	orderId,
@@ -191,7 +164,7 @@ export const OrderPlaced = ({
 					{ label: 'Total', value: `₹${info.current.totalAmount}`, highlight: true },
 					{
 						label: 'Delivery Slot',
-						value: info.current.deliverySlot,
+						value: formatDeliverySlot(info.current.deliverySlot),
 						highlight: true,
 						bold: true,
 					},
