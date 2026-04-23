@@ -29,10 +29,7 @@ export const syncProfile = async ({
 export const isUserAllowed = async (userEmail: string): Promise<boolean> => {
 	if (userEmail === '') return false;
 
-	const { data, error } = await supabase
-		.from('allowed_users')
-		.select()
-		.eq('email', '2500520100023@ietlucknow.ac.in');
+	const { data, error } = await supabase.from('allowed_users').select().eq('email', userEmail);
 
 	if (error) return false;
 	if (!data) return false;
