@@ -21,6 +21,7 @@ import { useCartCount, useCartTotal } from '@/store/cart.selectors';
 import { useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { pushSentinel, removeSentinels, useBackButton } from '@/hooks/useBackButton';
+import { formatDeliverySlot, getNextTimeSlot } from '@/utils/orders.utils';
 
 export default function CartSheet() {
 	const {
@@ -40,11 +41,6 @@ export default function CartSheet() {
 	const [open, setOpen] = useState(false);
 	const sentinelCount = useRef(0);
 
-	/**
-	 * The ONE place that fully closes and resets the sheet.
-	 * Safe to call from ✕ button, outside-click, or programmatic close.
-	 * NOT called from the back-press handler (which manages its own cleanup).
-	 */
 	const closeSheet = () => {
 		const toRemove = sentinelCount.current;
 		sentinelCount.current = 0;
@@ -56,7 +52,7 @@ export default function CartSheet() {
 	const openSheet = () => {
 		setOpen(true);
 		if (isMobile) {
-			pushSentinel(); // sentinel #1 — back from cart closes the sheet
+			pushSentinel();
 			sentinelCount.current = 1;
 		}
 	};
@@ -64,31 +60,21 @@ export default function CartSheet() {
 	const goToCheckout = () => {
 		setSheetStatus('checkout');
 		if (isMobile) {
-			pushSentinel(); // sentinel #2 — back from checkout → cart
+			pushSentinel();
 			sentinelCount.current += 1;
 		}
 	};
 
 	const onOpenChange = (isOpen: boolean) => {
-		// isOpen=true is handled by openSheet() via the CartButton onClick.
-		// isOpen=false only fires from ✕ / outside-click, never from back-press,
-		// because the back handler uses setOpen(false) directly, bypassing
-		// the Radix controlled-open callback chain.
 		if (!isOpen) closeSheet();
 	};
 
 	useBackButton(() => {
-		// The browser already popped one sentinel — decrement our count.
 		sentinelCount.current = Math.max(0, sentinelCount.current - 1);
 
 		if (sheetStatus === 'checkout') {
-			// Go back to cart. One sentinel (#1) still remains for the
-			// eventual cart → close back-press.
 			setSheetStatus('cart');
-			// Keep the sheet open — do NOT call setOpen or closeSheet.
 		} else {
-			// sheetStatus === 'cart' or 'order_placed': close entirely.
-			// All sentinels have been consumed (count is now 0), so no rewind needed.
 			setOpen(false);
 			setSheetStatus('cart');
 		}
@@ -127,6 +113,10 @@ export default function CartSheet() {
 							<SheetDescription>Checkout</SheetDescription>
 						</SheetHeader>
 
+						<p className="text-center">
+							<strong>Delivery Slot: </strong>{' '}
+							<span>{formatDeliverySlot(getNextTimeSlot())}</span>
+						</p>
 						<SummaryTable />
 						<NoRefundNotice />
 
