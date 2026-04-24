@@ -25,7 +25,7 @@ export default function AuthButtons() {
 				</SignOutButton>
 			) : (
 				<SignInButton mode="modal">
-					<Button>Login</Button>
+					<Button size={isMobile ? 'sm' : 'default'}>Login</Button>
 				</SignInButton>
 			)}
 		</div>
