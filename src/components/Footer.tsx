@@ -1,3 +1,6 @@
+'use client';
+
+import { useCartCount } from '@/store/cart.selectors';
 import Link from 'next/link';
 
 const teamMembers = [
@@ -11,8 +14,10 @@ const teamMembers = [
 ];
 
 const Footer = () => {
+	const itemCount = useCartCount();
+
 	return (
-		<footer className="bg-white border-t py-8">
+		<footer className={`bg-white border-t py-8 ${itemCount > 0 ? 'pb-24' : ''}`}>
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="space-y-4 text-center text-sm text-gray-600">
 					<p>

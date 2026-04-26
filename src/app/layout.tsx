@@ -6,6 +6,8 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Metadata } from 'next';
 import Footer from '@/components/Footer';
+import FloatingCartButton from '@/components/cart/FloatingCartButton';
+import { SheetProvider } from '@/context/SheetContext';
 
 export const metadata: Metadata = {
 	title: 'Fastyy',
@@ -31,10 +33,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						formFieldInputPlaceholder__emailAddress: 'Use your IET Email ID',
 					}}
 				>
-					<SyncClerkWithSupabase />
-					<Navbar />
-					{children}
-					<Footer />
+					<SheetProvider>
+						<SyncClerkWithSupabase />
+						<Navbar />
+						{children}
+						<FloatingCartButton />
+						<Footer />
+					</SheetProvider>
 				</ClerkProvider>
 				<Analytics />
 				<SpeedInsights />
