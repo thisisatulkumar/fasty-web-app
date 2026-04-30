@@ -13,7 +13,6 @@ import ShowConfirm from './ShowConfirm';
 import Trigger from './Trigger';
 import PlaceOrder from './PlaceOrder';
 import ProductCardSkeleton from '../products/ProductCartSkeleton';
-import Countdown from './Countdown';
 
 const AutoCad = () => {
 	const { user, isLoaded, isSignedIn } = useUser();
@@ -68,7 +67,7 @@ const AutoCad = () => {
 				.from('orders')
 				.select('*')
 				.eq('user_id', profileId)
-				.eq('total_amount', 0);
+				.eq('room_number', 101);
 
 			if (!data) {
 				setHasBought(false);
