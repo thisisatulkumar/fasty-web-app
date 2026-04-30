@@ -29,7 +29,7 @@ const AutoCad = () => {
 
 	const isMobile = useIsMobile();
 
-	const price = 0;
+	const price: number = 20;
 
 	useEffect(() => {
 		if (!user) return;
@@ -119,8 +119,6 @@ const AutoCad = () => {
 
 	return (
 		<Card className="relative">
-			{isLoaded && !isLoadingHasBought && <Countdown hasBought={hasBought} />}
-
 			<CardContent className="p-3">
 				<Image
 					src="https://xmilcbzxgstsgasraceh.supabase.co/storage/v1/object/public/product_images/1777396354215.jpg"
