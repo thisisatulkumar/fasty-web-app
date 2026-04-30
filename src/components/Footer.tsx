@@ -4,7 +4,7 @@ import { useCartCount } from '@/store/cart.selectors';
 import Link from 'next/link';
 
 const teamMembers = [
-	{ name: 'Aditya', linkedin: 'https://www.linkedin.com/in/aditya-36bb123a6/' },
+	{ name: 'Aditya (AI)', linkedin: 'https://www.linkedin.com/in/aditya-36bb123a6/' },
 	{ name: 'Anurudh Agarwal', linkedin: 'https://www.linkedin.com/in/anurudh-agarwal-597b15380/' },
 	{ name: 'Atul Kumar', linkedin: 'https://www.linkedin.com/in/thisisatulkumar/' },
 	{
