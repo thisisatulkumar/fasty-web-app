@@ -1,9 +1,16 @@
+import { useIsMobile } from '@/hooks/use-mobile';
+import Link from 'next/link';
+import { Button } from '../ui/button';
+
 interface ShowConfirmProps {
 	step: number;
+	price: number;
 	setDialogOpen: (open: boolean) => void;
 }
 
-const ShowConfirm = ({ step, setDialogOpen }: ShowConfirmProps) => {
+const ShowConfirm = ({ step, price, setDialogOpen }: ShowConfirmProps) => {
+	const isMobile = useIsMobile();
+
 	return (
 		<div
 			style={{
@@ -82,45 +89,37 @@ const ShowConfirm = ({ step, setDialogOpen }: ShowConfirmProps) => {
 				Order Placed!
 			</h1>
 
-			<p
-				style={{
-					color: '#999',
-					fontSize: '0.95rem',
-					margin: '0 0 2.5rem',
-					opacity: step >= 2 ? 1 : 0,
-					transform: step >= 2 ? 'translateY(0)' : 'translateY(8px)',
-					transition: 'all 0.4s ease 0.1s',
-				}}
-			>
-				You'll receive the PDF on your college email
+			<p className="text-gray-600 my-2">
+				<ol>
+					<li>
+						1. Pay <strong>₹{price}</strong> 👇
+					</li>
+					<li>
+						2. Send the transaction screenshot (<strong>Transaction ID</strong> must be
+						visible) to <strong>+91 95190 47102</strong>{' '}
+					</li>
+					<li>
+						3. After payment verification, your AutoCAD PDF will be uploaded to{' '}
+						<Link
+							href="https://drive.google.com/drive/folders/1Q7duUKY0X9QAHu2vFCyIUPjXSJuvCTOh?usp=drive_link"
+							target="_blank"
+							className="text-blue-500 underline"
+						>
+							Google Drive
+						</Link>
+					</li>
+				</ol>
 			</p>
 
-			{/* Back Button */}
-			<button
-				onClick={() => setDialogOpen(false)}
-				style={{
-					marginTop: '2rem',
-					padding: '12px 28px',
-					background: 'transparent',
-					border: '0.5px solid #555',
-					borderRadius: '999px',
-					color: '#555',
-					fontSize: '0.875rem',
-					cursor: 'pointer',
-					opacity: step >= 4 ? 1 : 0,
-					transition: 'all 0.4s ease 0.1s, color 0.2s, border-color 0.2s',
-				}}
-				onMouseEnter={(e) => {
-					(e.target as HTMLButtonElement).style.color = '#0a0a0a';
-					(e.target as HTMLButtonElement).style.borderColor = '#333';
-				}}
-				onMouseLeave={(e) => {
-					(e.target as HTMLButtonElement).style.color = '#555';
-					(e.target as HTMLButtonElement).style.borderColor = '#555';
-				}}
-			>
-				Shop More
-			</button>
+			{isMobile && (
+				<Button className="mt-4 bg-green-600" onClick={() => setDialogOpen(false)}>
+					<Link
+						href={`upi://pay?pa=8303714677-1@nyes&pn=Ratan%20Deep%20Pathak&am=${price}&cu=INR&tn=AutoCAD%20Payment`}
+					>
+						Pay ₹{price}
+					</Link>
+				</Button>
+			)}
 
 			<style>{`
         @keyframes pulse {

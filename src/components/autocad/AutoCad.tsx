@@ -147,7 +147,11 @@ const AutoCad = () => {
 
 							<DrawerContent className="p-4">
 								{showConfirm ? (
-									<ShowConfirm step={step} setDialogOpen={setDialogOpen} />
+									<ShowConfirm
+										step={step}
+										price={price}
+										setDialogOpen={setDialogOpen}
+									/>
 								) : (
 									<>
 										<DrawerTitle>AutoCAD Assignment</DrawerTitle>
@@ -159,6 +163,7 @@ const AutoCad = () => {
 											isBuying={isBuying}
 											isDrawer={true}
 											onSubmit={onSubmit}
+											price={price}
 										/>
 									</>
 								)}
@@ -177,7 +182,11 @@ const AutoCad = () => {
 
 							<DialogContent className="p-4">
 								{showConfirm ? (
-									<ShowConfirm step={step} setDialogOpen={setDialogOpen} />
+									<ShowConfirm
+										step={step}
+										price={price}
+										setDialogOpen={setDialogOpen}
+									/>
 								) : (
 									<>
 										<DialogTitle>AutoCAD Assignment</DialogTitle>
@@ -189,6 +198,7 @@ const AutoCad = () => {
 											isBuying={isBuying}
 											isDrawer={true}
 											onSubmit={onSubmit}
+											price={price}
 										/>
 									</>
 								)}
