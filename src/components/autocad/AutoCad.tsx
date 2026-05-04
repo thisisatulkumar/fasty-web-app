@@ -28,7 +28,7 @@ const AutoCad = () => {
 
 	const isMobile = useIsMobile();
 
-	const price: number = 30;
+	const price: number = 20;
 
 	useEffect(() => {
 		if (!user) return;

@@ -89,36 +89,38 @@ const ShowConfirm = ({ step, price, setDialogOpen }: ShowConfirmProps) => {
 				Order Placed!
 			</h1>
 
-			<p className="text-gray-600 my-2">
-				<ol>
-					<li>
-						1. Pay <strong>₹{price}</strong> 👇
-					</li>
-					<li>
-						2. Send the transaction screenshot (<strong>Transaction ID</strong> must be
-						visible) to <strong>+91 95190 47102</strong>{' '}
-					</li>
-					<li>
-						3. After payment verification, your AutoCAD PDF will be uploaded to{' '}
-						<Link
-							href="https://drive.google.com/drive/folders/1Q7duUKY0X9QAHu2vFCyIUPjXSJuvCTOh?usp=drive_link"
-							target="_blank"
-							className="text-blue-500 underline"
-						>
-							Google Drive
-						</Link>
-					</li>
-				</ol>
-			</p>
-
 			{isMobile && (
-				<Button className="mt-4 bg-green-600" onClick={() => setDialogOpen(false)}>
-					<Link
-						href={`upi://pay?pa=8303714677-1@nyes&pn=Ratan%20Deep%20Pathak&am=${price}&cu=INR&tn=AutoCAD%20Payment`}
-					>
-						Pay ₹{price}
-					</Link>
-				</Button>
+				<>
+					<p className="text-gray-600 my-2">
+						<ol>
+							<li>
+								1. Pay <strong>₹{price}</strong> 👇
+							</li>
+							<li>
+								2. Send the transaction screenshot (<strong>Transaction ID</strong>{' '}
+								must be visible) to <strong>+91 95190 47102</strong>{' '}
+							</li>
+							<li>
+								3. After payment verification, your AutoCAD PDF will be uploaded to{' '}
+								<Link
+									href="https://drive.google.com/drive/folders/1Q7duUKY0X9QAHu2vFCyIUPjXSJuvCTOh?usp=drive_link"
+									target="_blank"
+									className="text-blue-500 underline"
+								>
+									Google Drive
+								</Link>
+							</li>
+						</ol>
+					</p>
+
+					<Button className="mt-4 bg-green-600" onClick={() => setDialogOpen(false)}>
+						<Link
+							href={`upi://pay?pa=8303714677-1@nyes&pn=Ratan%20Deep%20Pathak&am=${price}&cu=INR&tn=AutoCAD%20Payment`}
+						>
+							Pay ₹{price}
+						</Link>
+					</Button>
+				</>
 			)}
 
 			<style>{`
