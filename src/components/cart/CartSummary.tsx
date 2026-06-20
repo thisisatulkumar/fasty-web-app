@@ -22,16 +22,22 @@ export default function CartSummary({ setSheetStatus }: CartSummaryProps) {
 	return (
 		<>
 			{isSignedIn ? (
+				// <Button
+				// 	className="w-full h-15 flex items-center justify-between px-5"
+				// 	onClick={() => setSheetStatus('checkout')}
+				// 	disabled={total === 0}
+				// >
+				// 	<div className="flex flex-col text-white">
+				// 		<span className="text-xl font-bold">₹{total}</span>
+				// 		<span className="text-xs opacity-80">TOTAL</span>
+				// 	</div>
+				// 	<span className="text-lg font-semibold text-white">Proceed →</span>
+				// </Button>
 				<Button
-					className="w-full h-15 flex items-center justify-between px-5"
-					onClick={() => setSheetStatus('checkout')}
-					disabled={total === 0}
+					className="w-full h-10 flex items-center justify-center px-5 text-md"
+					disabled
 				>
-					<div className="flex flex-col text-white">
-						<span className="text-xl font-bold">₹{total}</span>
-						<span className="text-xs opacity-80">TOTAL</span>
-					</div>
-					<span className="text-lg font-semibold text-white">Proceed →</span>
+					Service Unavailable
 				</Button>
 			) : (
 				<SignInButton mode="modal">
