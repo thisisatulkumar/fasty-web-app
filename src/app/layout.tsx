@@ -8,7 +8,6 @@ import { Metadata } from 'next';
 import Footer from '@/components/Footer';
 import FloatingCartButton from '@/components/cart/FloatingCartButton';
 import { SheetProvider } from '@/context/SheetContext';
-import SiteInactive from '@/components/SiteInactive';
 
 export const metadata: Metadata = {
 	title: 'Fastyy',
@@ -19,8 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body>
-				<SiteInactive />
-				{/* <ClerkProvider
+				<ClerkProvider
 					localization={{
 						signIn: {
 							start: {
@@ -42,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						<FloatingCartButton />
 						<Footer />
 					</SheetProvider>
-				</ClerkProvider> */}
+				</ClerkProvider>
 				<Analytics />
 				<SpeedInsights />
 			</body>
